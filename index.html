@@ -30,6 +30,9 @@ a{color:inherit;text-decoration:none}
 .brand{font-family:Arial,sans-serif;text-transform:uppercase;letter-spacing:.22em;font-size:12px;color:var(--accent2)}
 .navlinks{display:flex;gap:28px;font-family:Arial,sans-serif;font-size:12px;color:var(--muted)}
 .navlinks a:hover{color:var(--text)}
+.menu-toggle{display:none;width:42px;height:36px;border:1px solid var(--line);background:transparent;cursor:pointer;align-items:center;justify-content:center;flex-direction:column;gap:5px}
+.menu-toggle span{display:block;width:18px;height:1px;background:var(--accent2);transition:.25s}
+.mobile-menu{display:none}
 .hero{
   max-width:1120px;margin:auto;min-height:calc(100vh - 58px);padding:80px 25px;
   display:grid;grid-template-columns:1fr .7fr;gap:80px;align-items:center
@@ -112,6 +115,12 @@ section{max-width:1120px;margin:auto;padding:100px 25px}
 .footer{border-top:1px solid var(--line);padding:50px 25px;color:#706962;text-align:center;font-family:Arial,sans-serif;font-size:11px;letter-spacing:.04em}
 @media(max-width:800px){
   .navlinks{display:none}
+  .menu-toggle{display:flex}
+  .mobile-menu{position:fixed;left:12px;right:12px;top:62px;z-index:30;display:none;flex-direction:column;background:rgba(25,23,21,.98);border:1px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.45);backdrop-filter:blur(14px)}
+  .mobile-menu.open{display:flex}
+  .mobile-menu a{padding:14px 18px;border-bottom:1px solid rgba(65,59,54,.7);font:12px Arial,sans-serif;color:var(--muted)}
+  .mobile-menu a:last-child{border-bottom:0}
+  .mobile-menu a:hover{color:var(--text);background:rgba(255,255,255,.03)}
   .hero{grid-template-columns:1fr;min-height:auto;padding-top:65px}
   .cover{max-width:320px}
   .two,.themes{grid-template-columns:1fr}
@@ -160,7 +169,6 @@ button,a{-webkit-tap-highlight-color:transparent}
 }
 @media (max-width:800px){
   .nav-inner{padding:14px 18px}
-  .navlinks{display:none}
   .hero{
     display:flex;flex-direction:column;align-items:flex-start;
     gap:42px;min-height:auto;padding-top:58px;padding-bottom:65px
@@ -328,11 +336,24 @@ body:after{
 <nav class="nav">
   <div class="nav-inner">
     <a class="brand" href="#top">Хачико</a>
+    <button class="menu-toggle" id="menuToggle" type="button" aria-label="Мәзірді ашу" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
     <div class="navlinks">
       <a href="#about">Шығарма</a><a href="#story">Оқиға</a><a href="#gallery">Фото</a><a href="#film">Фильм</a><a href="#video">Видео</a><a href="#reader">Оқу</a><a href="#comparison">Кітап / Фильм</a>
     </div>
   </div>
 </nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about">Шығарма</a>
+  <a href="#story">Оқиға</a>
+  <a href="#gallery">Фото</a>
+  <a href="#film">Фильм</a>
+  <a href="#video">Видео</a>
+  <a href="#reader">Оқу</a>
+  <a href="#comparison">Кітап / Фильм</a>
+</div>
 
 <header class="hero" id="top">
   <div>
@@ -600,7 +621,7 @@ body:after{
 
 <section id="reader" class="reveal">
   <div class="eyebrow">07 — Онлайн кітап</div>
-  <h2 class="section-title">Открой книгу</h2>
+  <h2 class="section-title">Кітапты ашу</h2>
   <p class="section-lead">
     Енді бұл жай ғана PDF емес. Кітаптың мұқабасын басып, оны шын кітап сияқты ашыңыз.
     <b>A</b> — алдыңғы бет, <b>D</b> — келесі бет, ал телефонда парақты саусақпен сырғытыңыз.
@@ -626,12 +647,12 @@ body:after{
 
       <div class="reader-opened">
         <div class="book-spread" id="bookSpread">
-          <div class="spread-page left"><img id="leftPage" src="book-pages/page-01.webp" alt="Хачико кітабы — 1-бет"></div>
-          <div class="spread-page right"><img id="rightPage" src="book-pages/page-02.webp" alt="Хачико кітабы — 2-бет"></div>
+          <div class="spread-page left"><img id="leftPage" src="page-01.webp" alt="Хачико кітабы — 1-бет"></div>
+          <div class="spread-page right"><img id="rightPage" src="page-02.webp" alt="Хачико кітабы — 2-бет"></div>
           <div class="book-spine"></div>
           <div class="turn-sheet" id="turnSheet">
-            <div class="turn-face front"><img id="turnFront" src="book-pages/page-02.webp" alt=""></div>
-            <div class="turn-face back"><img id="turnBack" src="book-pages/page-03.webp" alt=""></div>
+            <div class="turn-face front"><img id="turnFront" src="page-02.webp" alt=""></div>
+            <div class="turn-face back"><img id="turnBack" src="page-03.webp" alt=""></div>
           </div>
         </div>
       </div>
@@ -640,7 +661,7 @@ body:after{
     <div class="reader-ui">
       <div class="reader-top">
         <div class="reader-title">HACHIKO · BOOK EXPERIENCE</div>
-        <div class="reader-status" id="readerStatus">Страницы 1–2 / 22</div>
+        <div class="reader-status" id="readerStatus">Беттер 1–2 / 22</div>
       </div>
       <div class="reader-progress"><span id="readerProgress"></span></div>
       <div class="reader-controls">
@@ -650,14 +671,14 @@ body:after{
       </div>
       <div class="reader-hints">
         <span>Компьютер: <b>A</b> / <b>D</b></span>
-        <span>Стрелки: <b>←</b> / <b>→</b></span>
-        <span>Телефон: свайп</span>
-        <span class="sound-state" id="soundState">Звук: включится при открытии</span>
+        <span>Пернелер: <b>←</b> / <b>→</b></span>
+        <span>Телефон: сырғыту</span>
+        <span class="sound-state" id="soundState">Дыбыс: ашқанда қосылады</span>
       </div>
       <div class="reader-actions">
         <a class="reader-action" href="hachiko-book.pdf" download>PDF</a>
-        <button class="reader-action" id="readerFullscreen" type="button">Полный экран</button>
-        <button class="reader-action" id="soundToggle" type="button">Звук: Вкл.</button>
+        <button class="reader-action" id="readerFullscreen" type="button">Толық экран</button>
+        <button class="reader-action" id="soundToggle" type="button">Дыбыс: Қосулы</button>
       </div>
     </div>
   </div>
@@ -689,7 +710,7 @@ body:after{
   </p>
   <div style="margin-top:28px">
     <textarea placeholder="Хатиконың оқиғасы маған ... туралы ой салды."></textarea>
-    <div class="impression-note">Мәтін бұл демо-нұсқада браузерге сақталмайды. Қаласаң, кейін сақтайтын нұсқасын да жасаймыз.</div>
+    <div class="impression-note">Жазған мәтініңіз осы браузерде автоматты түрде сақталады.</div>
   </div>
 </section>
 
@@ -758,6 +779,26 @@ document.addEventListener("DOMContentLoaded", () => {
   lightbox.addEventListener("click", e => { if(e.target === lightbox) close(); });
   document.addEventListener("keydown", e => { if(e.key === "Escape") close(); });
 
+  /* Mobile navigation */
+  const menuToggle = document.getElementById("menuToggle");
+  const mobileMenu = document.getElementById("mobileMenu");
+  const closeMobileMenu = () => {
+    mobileMenu.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
+  };
+  menuToggle.addEventListener("click", () => {
+    const open = mobileMenu.classList.toggle("open");
+    menuToggle.setAttribute("aria-expanded", String(open));
+  });
+  mobileMenu.querySelectorAll("a").forEach(link => link.addEventListener("click", closeMobileMenu));
+
+  /* Save reader impression in this browser */
+  const impression = document.querySelector(".impression textarea");
+  const impressionKey = "hachikoImpression";
+  const savedImpression = localStorage.getItem(impressionKey);
+  if (savedImpression !== null) impression.value = savedImpression;
+  impression.addEventListener("input", () => localStorage.setItem(impressionKey, impression.value));
+
   /* Realistic book reader */
   const reader = document.getElementById("bookReader");
   const openBook = document.getElementById("openBook");
@@ -776,7 +817,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const soundToggle = document.getElementById("soundToggle");
   const soundState = document.getElementById("soundState");
 
-  const pages = Array.from({length:22}, (_, i) => `book-pages/page-${String(i+1).padStart(2,'0')}.webp`);
+  const pages = Array.from({length:22}, (_, i) => `page-${String(i+1).padStart(2,'0')}.webp`);
   let current = 1; // left page in the visible spread
   let busy = false;
   let soundOn = true;
@@ -834,7 +875,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const right = Math.min(current + 1, pages.length);
     const label = current === right ? `${current} / ${pages.length}` : `${current}–${right} / ${pages.length}`;
     pageLabel.textContent = label;
-    status.textContent = `Страницы ${label}`;
+    status.textContent = `Беттер ${label}`;
     progress.style.width = `${(Math.max(current,1) / pages.length) * 100}%`;
     prevBtn.disabled = current <= 1 || busy;
     nextBtn.disabled = current >= pages.length || busy;
@@ -929,8 +970,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   soundToggle.addEventListener("click", () => {
     soundOn = !soundOn;
-    soundToggle.textContent = soundOn ? "Звук: Вкл." : "Звук: Выкл.";
-    soundState.textContent = soundOn ? "Звук: включен" : "Звук: выключен";
+    soundToggle.textContent = soundOn ? "Дыбыс: Қосулы" : "Дыбыс: Өшірулі";
+    soundState.textContent = soundOn ? "Дыбыс: қосулы" : "Дыбыс: өшірулі";
     soundState.classList.toggle("on", soundOn);
     if (soundOn) { ensureAudio(); paperSound("turn"); }
   });
